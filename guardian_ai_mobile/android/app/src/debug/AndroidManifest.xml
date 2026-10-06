@@ -1,0 +1,10 @@
+<!--
+  Debug-only overlay.  Allows plain-HTTP connections so a locally running
+  tracking server can be used during development:
+    - Emulator:        http://10.0.2.2:4000
+    - USB device:      adb reverse tcp:4000 tcp:4000, then http://localhost:4000
+  Release builds never include this file; production servers must use HTTPS.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:usesCleartextTraffic="true"/>
+</manifest>

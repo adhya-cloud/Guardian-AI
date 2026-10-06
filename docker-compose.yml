@@ -1,0 +1,22 @@
+# Runs the optional live-map tracking server with MongoDB persistence.
+#   docker compose up --build
+# Then set the app's Settings → Live-map server to http://<your-computer-ip>:4000
+# (debug builds allow http; use HTTPS in production).
+services:
+  tracking:
+    build: ./tracking-server
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: development
+      MONGO_URI: mongodb://mongo:27017/guardian_tracking
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

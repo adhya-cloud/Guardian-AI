@@ -1,0 +1,23 @@
+# Secrets - never commit
+*.jks
+*.keystore
+key.properties
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+build/
+.dart_tool/
+.gradle/
+coverage/
+
+# Local machine / editor config
+.claude/
+local.properties
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

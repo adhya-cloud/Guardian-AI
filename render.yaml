@@ -1,0 +1,23 @@
+# One-click deploy of the optional live-map server to Render (https://render.com).
+# Render gives the service a free HTTPS address such as
+#   https://guardian-tracking.onrender.com
+# Put that address in the app: Settings → Live-map server.
+services:
+  - type: web
+    name: guardian-tracking
+    runtime: node
+    plan: free
+    rootDir: tracking-server
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Render terminates HTTPS in one proxy in front of the app.
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      # Optional: set MONGO_URI (e.g. a free MongoDB Atlas cluster) to keep
+      # sessions across restarts. Without it sessions live in memory.
+      - key: MONGO_URI
+        sync: false

@@ -1,0 +1,11 @@
+<!--
+  Lite edition: removes the SMS and call permissions so the APK can be
+  installed from WhatsApp, a browser or a file manager (Google Play Protect's
+  enhanced fraud protection blocks sideloaded apps with SMS permissions).
+  Alerts open the Messages app pre-filled instead; calls open the dialer.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.SEND_SMS" tools:node="remove"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" tools:node="remove"/>
+</manifest>

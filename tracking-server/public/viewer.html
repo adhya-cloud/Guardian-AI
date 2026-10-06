@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0e7c66">
+  <title>Live location · Guardian</title>
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="/static/viewer.css">
+</head>
+<body>
+  <header id="banner" class="banner banner--loading">
+    <div class="banner__row">
+      <span id="badge" class="badge">Loading…</span>
+      <span id="updated" class="updated"></span>
+    </div>
+    <h1 id="title" class="title">Guardian live location</h1>
+    <p id="subtitle" class="subtitle"></p>
+  </header>
+
+  <main class="map-wrap">
+    <div id="map" class="map" role="application" aria-label="Live location map"></div>
+    <div id="notice" class="notice" hidden></div>
+  </main>
+
+  <footer class="actions">
+    <a id="directions" class="btn btn--primary" href="#" target="_blank" rel="noopener" aria-disabled="true">Directions</a>
+    <a class="btn btn--danger" href="tel:112">Call 112</a>
+  </footer>
+
+  <script src="/vendor/leaflet/leaflet.js"></script>
+  <script src="/static/viewer.js"></script>
+</body>
+</html>
