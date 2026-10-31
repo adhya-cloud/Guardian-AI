@@ -1,198 +1,607 @@
-# Guardian — personal safety app for India
+<div align="center">🛡️ GUARDIAN AI
 
-Guardian is an Android-first Flutter app that gets help to you fast. SOS alerts
-go out **by SMS**, so they work without mobile data. The app also shares your
-location, watches over your journeys, and shows the nearest police stations and
-hospitals on a live map.
+Personal Safety & Emergency Response for India
 
-```
-guardian_ai_mobile/   Flutter app (Android primary, iOS supported with fallbacks)
-tracking-server/      Optional Node.js live-map server for real-time location links
-docker-compose.yml    Runs the tracking server + MongoDB
-```
+Your Safety. Your Guardian. Your Life.
 
-## Features
+An Android-first personal safety application built with Flutter to help users send emergency SMS alerts, share their location, monitor journeys, and discover nearby emergency services—even when mobile data is unavailable.
 
-| Feature | How it works |
-|---|---|
-| **SOS** | Tap the SOS button, or shake the phone, to start a cancellable 3/5/10 s countdown. The app then SMSes every trusted contact your name, a Google Maps link, GPS accuracy, time, battery level and optional medical info. Each message's delivery is confirmed by Android (sent / failed, per contact). |
-| **SOS follow-up** | Location keeps updating in the background (foreground service) and contacts get an update SMS every N minutes when you've moved. Optional auto-call to your primary contact or 112, a loud siren (alarm stream at full volume), and a flashlight strobe. "I'm safe" ends it and tells everyone. |
-| **Journey check-in** | Set a destination and a time limit. Guardian tracks the trip, reminds you 2 minutes before the deadline, and if you don't check in it **automatically** alerts your contacts with your last location, then stays in SOS mode. You can extend the timer or finish early ("I've arrived"). |
-| **Live location sharing** | Share for 15 min to 8 h. If a tracking server is configured, contacts get a **live map link** that updates every few seconds. Otherwise they get an SMS location update every N minutes. It stops automatically. |
-| **Interactive map** | An OpenStreetMap map (no API key needed) with your live position and accuracy circle. It shows nearby **police stations, hospitals, pharmacies and fire stations** from OpenStreetMap data, with filters, "search this area", distances, one-tap directions, calls and sharing. |
-| **Trusted contacts** | Pick from the phone book (no contacts permission needed) or type a number. Set a primary contact, choose who gets SOS alerts, and send a test/intro SMS. Indian number formats are handled. |
-| **Helplines** | One-tap dialling of 112, 100, 1091, 181, 108, 102, 101, 1098, 1930 and 14567. |
-| **Fake call** | A realistic incoming call using your real ringtone and vibration, after a delay you choose, to help you leave an uncomfortable situation. |
-| **History** | Every SOS, journey and live share, with the route drawn on a map and the delivery status of every message. |
-| **Languages** | Full English and Hindi UI and alert messages. |
-| **Privacy** | Profile, contacts and history are stored encrypted on the phone (Android Keystore / iOS Keychain). No account and no analytics. The optional server only sees location points during an active share. |
+""Flutter" (https://img.shields.io/badge/Flutter-3.44-02569B?style=for-the-badge&logo=flutter&logoColor=white)" (https://flutter.dev/)
+""Dart" (https://img.shields.io/badge/Dart-3.12-0175C2?style=for-the-badge&logo=dart&logoColor=white)" (https://dart.dev/)
+""Kotlin" (https://img.shields.io/badge/Kotlin-Android-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)" (https://kotlinlang.org/)
+""Node.js" (https://img.shields.io/badge/Node.js-Optional_Backend-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)" (https://nodejs.org/)
 
-## Tech stack
+Emergency Alerts • Location Sharing • Journey Monitoring • Privacy-First Design
 
-**App:** Flutter 3.44 / Dart 3.12
-- **Maps:** `flutter_map` + OpenStreetMap tiles
-- **Nearby places:** Overpass API
-- **Location:** native Android `LocationManager` bridge (with a foreground service while tracking)
-- **State:** `provider`
-- **Platform services:** `permission_handler`, `sensors_plus` (shake), `flutter_local_notifications`, `flutter_secure_storage`, `share_plus`, `url_launcher`, `http`
-- **Custom Kotlin method channel:** direct SMS with sent-confirmation, the system contact picker, direct calls, torch, synthesized siren, ringtone and battery level
+"Features" (#-key-features) · "Screenshots" (#-application-screenshots) · "Architecture" (#-system-architecture) · "Installation" (#-getting-started) · "Deployment" (#-deployment) · "Contributing" (#-contributing)
 
-**Tracking server:** Node 20+ with Express 4, `helmet` and `express-rate-limit`. Storage is in-memory, or MongoDB if configured. The web viewer uses Leaflet, served locally with no CDN.
+</div>---
 
-## Do I need the server?
+📌 Table of Contents
 
-**No.** The app works on its own. Everything below works with **no server at
-all**: SOS by SMS with your location, automatic location-update SMS, journey
-check-in and its automatic alert, the map with nearby police and hospitals,
-helplines, fake call, siren, flashlight strobe and history.
+- "Overview" (#-overview)
+- "The Problem" (#-the-problem)
+- "Our Solution" (#-our-solution)
+- "Key Features" (#-key-features)
+- "Application Screenshots" (#-application-screenshots)
+- "Deployment Photos" (#-deployment-photos)
+- "How It Works" (#-how-it-works)
+- "System Architecture" (#-system-architecture)
+- "Technology Stack" (#-technology-stack)
+- "Project Structure" (#-project-structure)
+- "Getting Started" (#-getting-started)
+- "Tracking Server Setup" (#-tracking-server-setup)
+- "Deployment" (#-deployment)
+- "Privacy and Security" (#-privacy-and-security)
+- "Limitations" (#-limitations)
+- "Roadmap" (#-roadmap)
+- "Contributing" (#-contributing)
+- "Team" (#-team)
+- "License" (#-license)
 
-The tracking server adds one thing: a **live map link** that contacts can open
-in a browser. Without it, live location sharing sends an SMS with your
-location every few minutes instead.
+---
 
-## Run the app for development
+🚀 Overview
 
-Requirements: Flutter 3.44+, Android SDK (API 36 platform), JDK 17.
+Guardian AI is an Android-first personal safety application designed to make emergency communication faster, simpler, and more accessible.
 
-```bash
+In an emergency, a person may not have enough time to navigate multiple screens, explain their location, or rely on mobile internet. Guardian addresses these challenges by bringing essential safety features into a single mobile application.
+
+The application prioritizes SMS-based SOS alerts, location-aware emergency communication, journey check-ins, live location sharing, and access to nearby emergency services.
+
+An optional Node.js tracking server enables a shareable live-map experience. The core safety workflows can operate independently of that server.
+
+«Core principle: Essential emergency communication should not depend entirely on an internet connection.»
+
+✨ Highlights
+
+- 🔴 SOS alerts through SMS without requiring mobile data for the SMS transmission itself.
+- 📍 GPS-based location information and location-update messages.
+- 🚶 Journey check-ins with automatic escalation after a missed deadline.
+- 🗺️ OpenStreetMap-based maps and nearby emergency-place discovery.
+- 🚨 Emergency utilities, including a siren and flashlight strobe.
+- 📞 Quick access to important Indian emergency helplines.
+- 🇮🇳 English and Hindi interfaces and alert messages.
+- 🔐 Local-first data storage with platform-backed secure storage.
+- 🌐 Optional tracking server for shareable live-map links.
+
+---
+
+❗ The Problem
+
+During an emergency, people may face several challenges:
+
+- Difficulty contacting trusted people quickly.
+- Lack of mobile internet connectivity.
+- Inability to communicate their current location.
+- Safety concerns while travelling alone.
+- Missed arrival times without an automated notification.
+- Difficulty locating nearby police stations, hospitals, or pharmacies.
+- Privacy concerns associated with sharing sensitive personal information.
+
+Traditional communication methods may require multiple manual steps, especially when the user is under stress.
+
+💡 Our Solution
+
+Guardian brings essential personal safety capabilities together in one application.
+
+Instead of treating emergency alerts, journey monitoring, and location sharing as separate tasks, Guardian combines them into a connected safety workflow.
+
+The user can configure trusted contacts, initiate an SOS, share location information, establish a journey deadline, and access nearby emergency resources from the same application.
+
+Guardian is designed to assist emergency communication—not replace professional emergency services.
+
+---
+
+🔥 Key Features
+
+1. 🔴 Emergency SOS
+
+Initiate an emergency alert with a single tap or a supported shake-based trigger.
+
+How it works:
+
+1. The user activates SOS.
+2. A configurable 3-, 5-, or 10-second countdown begins.
+3. The user can cancel an accidental activation.
+4. The application attempts to send SMS alerts to configured trusted contacts.
+5. The message can include the user's name, available Google Maps location link, GPS accuracy, timestamp, battery level, and optional medical information.
+6. Android SMS status callbacks provide sent or failed status for individual messages.
+
+Important: A successful send status does not guarantee that the recipient received or read the message.
+
+2. 📍 SOS Follow-Up
+
+Emergency communication can continue after the initial alert.
+
+- Background location tracking while enabled.
+- Periodic location-update SMS messages.
+- Configurable update intervals.
+- Optional automatic calling to a primary contact or emergency number.
+- Emergency siren and flashlight strobe.
+- An "I'm Safe" action to end the SOS workflow and notify contacts.
+
+Background operation depends on device permissions, Android restrictions, and the configured implementation.
+
+3. 🚶 Journey Check-In
+
+Designed for people travelling alone or wanting additional journey oversight.
+
+Users can configure a destination and a time limit.
+
+Journey workflow:
+
+1. Enter the destination.
+2. Set the journey deadline.
+3. Start journey monitoring.
+4. Receive a reminder two minutes before the deadline.
+5. Confirm arrival or extend the timer.
+6. If the deadline is missed, initiate the configured automatic alert workflow using the last available location.
+7. Continue into SOS mode according to the application's escalation logic.
+
+This feature helps trusted contacts respond when a journey does not proceed as expected.
+
+4. 🌐 Live Location Sharing
+
+Share your location with selected contacts for a configurable period, from 15 minutes to 8 hours.
+
+Guardian supports two approaches:
+
+Mode| Behaviour
+Tracking server configured| Contacts receive a shareable live-map link that can update every few seconds.
+No tracking server| Contacts receive periodic SMS location updates.
+
+Location sharing stops automatically when its configured duration ends.
+
+5. 🗺️ Interactive Emergency Map
+
+The application uses OpenStreetMap-based mapping to display location information and nearby emergency resources.
+
+Supported place categories:
+
+- 🚓 Police stations
+- 🏥 Hospitals
+- 💊 Pharmacies
+- 🚒 Fire stations
+
+Map capabilities:
+
+- Current position and location-accuracy circle.
+- Nearby-place discovery.
+- Category filters.
+- Search within the visible map area.
+- Distance information.
+- One-tap directions and calling options where available.
+- Location sharing.
+
+Nearby-place discovery uses the Overpass API. Results depend on the available OpenStreetMap data and network connectivity.
+
+6. 👥 Trusted Contacts
+
+Configure the people who should be notified during an emergency.
+
+- Select contacts through the system contact picker.
+- Enter a phone number manually.
+- Configure a primary emergency contact.
+- Select recipients for SOS notifications.
+- Send test or introductory SMS messages.
+- Handle Indian phone-number formats.
+
+7. 🇮🇳 Indian Emergency Helplines
+
+Guardian provides one-tap dialling shortcuts for important helplines.
+
+Number| Service
+112| National Emergency Response Support System
+100| Police
+1091| Women Helpline
+181| Women Helpline
+108| Ambulance
+102| National Ambulance Service
+101| Fire Services
+1098| Child Helpline
+1930| Cyber Fraud Helpline
+14567| Elderline
+
+Note: Availability and service coverage may vary by location. Use the applicable official emergency service for your situation.
+
+8. 📲 Fake Call
+
+The fake-call feature simulates an incoming call after a configurable delay, using the device's ringtone and vibration where supported.
+
+It is designed to give users an additional way to leave an uncomfortable situation.
+
+It does not connect the user to a real caller or guarantee personal safety.
+
+9. 📜 Emergency History
+
+Review previous safety activities.
+
+- SOS events.
+- Journey history.
+- Live-location-sharing sessions.
+- Route visualization on a map.
+- Individual SMS status information.
+
+10. 🌐 Bilingual Experience
+
+Guardian supports English and Hindi for its user interface and emergency messages.
+
+The goal is to make essential safety functionality accessible to a wider range of users across India.
+
+---
+
+📱 Application Screenshots
+
+Explore the application's interface and safety workflows.
+
+Screenshot Gallery
+
+«Add your actual app screenshots to "docs/screenshots/" and update the filenames below. GitHub will render the images directly in your README.»
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/home.png" alt="Guardian home screen" width="220"/>
+      <br/><b>Home Screen</b>
+      <br/>Quick access to safety features
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/sos.png" alt="Guardian SOS screen" width="220"/>
+      <br/><b>Emergency SOS</b>
+      <br/>Rapid emergency alert workflow
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/live-location.png" alt="Guardian live location screen" width="220"/>
+      <br/><b>Live Location</b>
+      <br/>Location sharing and tracking
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/journey.png" alt="Guardian journey check-in screen" width="220"/>
+      <br/><b>Journey Check-In</b>
+      <br/>Timed journey monitoring
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/emergency-map.png" alt="Guardian emergency map" width="220"/>
+      <br/><b>Emergency Map</b>
+      <br/>Nearby emergency resources
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/settings.png" alt="Guardian settings screen" width="220"/>
+      <br/><b>Safety Settings</b>
+      <br/>Contacts, permissions, and preferences
+    </td>
+  </tr>
+</table>📂 Browse All Screenshots
+
+"View Application Screenshots" (docs/screenshots/)
+
+Repository path: "docs/screenshots/"
+
+If you prefer hosting the images externally, replace the relative image paths with links to your actual GitHub-hosted image files.
+
+---
+
+📸 Deployment Photos
+
+This section documents the project presentation, application demonstration, testing, and deployment setup.
+
+Project Demonstration
+
+Add photos showing the application running on a real Android device, including the SOS workflow, location map, and journey check-in.
+
+"View Deployment Photos" (docs/deployment/)
+
+Suggested Photo Collection
+
+Photo| Description
+"app-running.jpg"| Guardian running on an Android device
+"sos-demonstration.jpg"| Demonstration of the SOS workflow
+"location-map.jpg"| Nearby emergency-place map
+"journey-checkin.jpg"| Journey monitoring demonstration
+"server-deployment.jpg"| Optional tracking server deployment
+"team-presentation.jpg"| Project presentation or demonstration
+
+Deployment Gallery
+
+Once the photographs are added, you can display selected images here:
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/deployment/app-running.jpg" alt="Guardian running on a device" width="100%"/>
+      <br/><b>Application Demonstration</b>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/deployment/server-deployment.jpg" alt="Guardian tracking server deployment" width="100%"/>
+      <br/><b>Server Deployment</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/deployment/sos-demonstration.jpg" alt="Guardian SOS demonstration" width="100%"/>
+      <br/><b>SOS Workflow</b>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/deployment/team-presentation.jpg" alt="Guardian project team presentation" width="100%"/>
+      <br/><b>Project Presentation</b>
+    </td>
+  </tr>
+</table>These are proposed repository paths. Add your actual photos with the matching filenames or update the paths to match your assets.
+
+---
+
+⚙️ How It Works
+
+Emergency SOS Workflow
+
+flowchart TD
+    A[User Activates SOS] --> B[Start Configurable Countdown]
+    B --> C{Cancelled?}
+    C -->|Yes| D[Stop SOS Activation]
+    C -->|No| E[Acquire Available Location]
+    E --> F[Prepare Emergency Message]
+    F --> G[Send SMS to Trusted Contacts]
+    G --> H[Record Individual Send Status]
+    H --> I[Optional Location Follow-Up]
+    I --> J{User Confirms Safety?}
+    J -->|No| I
+    J -->|Yes| K[End SOS and Notify Contacts]
+
+Journey Check-In Workflow
+
+flowchart TD
+    A[Set Destination and Deadline] --> B[Start Journey]
+    B --> C[Monitor Journey and Timer]
+    C --> D{Deadline Approaching?}
+    D -->|Yes| E[Send Pre-Deadline Reminder]
+    D -->|No| F{Journey Completed?}
+    E --> F
+    F -->|Yes| G[Confirm Arrival and Finish]
+    F -->|No| H{Deadline Missed?}
+    H -->|No| C
+    H -->|Yes| I[Trigger Configured Escalation]
+    I --> J[Notify Trusted Contacts]
+    J --> K[Continue in SOS Mode]
+
+Live Location Sharing
+
+flowchart TD
+    A[User Starts Location Sharing] --> B[Select Duration and Contacts]
+    B --> C{Tracking Server Configured?}
+    C -->|Yes| D[Create Shareable Live-Map Link]
+    D --> E[Update Location Points]
+    C -->|No| F[Send Periodic SMS Location Updates]
+    E --> G{Sharing Duration Expired?}
+    F --> G
+    G -->|No| E
+    G -->|Yes| H[Stop Location Sharing]
+
+---
+
+🏗️ System Architecture
+
+Guardian uses a mobile-first architecture with an optional backend service for live-map sharing.
+
+flowchart TB
+    subgraph Mobile["Guardian Mobile Application"]
+        UI[Flutter and Dart UI]
+        STATE[Provider State Management]
+        NATIVE[Native Android Integration]
+        LOCATION[Location and Tracking]
+        SECURITY[Secure Local Storage]
+    end
+
+    subgraph Device["Android Device Services"]
+        SMS[SMS and Delivery Callbacks]
+        GPS[Location Manager]
+        CONTACTS[System Contact Picker]
+        PHONE[Calling and Torch]
+        NOTIFY[Notifications and Sensors]
+    end
+
+    subgraph Optional["Optional Tracking Infrastructure"]
+        API[Node.js and Express API]
+        LIMIT[Helmet and Rate Limiting]
+        STORE[In-Memory Storage or MongoDB]
+        WEB[Leaflet Live-Map Viewer]
+    end
+
+    subgraph External["External Data Services"]
+        OSM[OpenStreetMap Tiles]
+        OVERPASS[Overpass API]
+    end
+
+    UI --> STATE
+    STATE --> NATIVE
+    NATIVE --> SMS
+    NATIVE --> GPS
+    NATIVE --> CONTACTS
+    NATIVE --> PHONE
+    NATIVE --> NOTIFY
+    STATE --> LOCATION
+    STATE --> SECURITY
+
+    LOCATION -. Optional live sharing .-> API
+    API --> LIMIT
+    LIMIT --> STORE
+    STORE --> WEB
+
+    UI --> OSM
+    UI --> OVERPASS
+
+Architecture Principles
+
+- Standalone core: Basic SOS SMS, journey workflows, emergency utilities, and history do not inherently require the optional tracking server.
+- Platform integration: Native Android functionality handles device-level capabilities that require platform APIs.
+- Optional infrastructure: The tracking server enables shareable live-map links.
+- Local-first design: Personal data is intended to remain on the device unless a feature explicitly transmits it.
+- Graceful degradation: Features that depend on mobile data or optional infrastructure may be unavailable when connectivity is lost.
+
+---
+
+🧰 Technology Stack
+
+Mobile Application
+
+Technology| Purpose
+Flutter 3.44| Cross-platform mobile application framework
+Dart 3.12| Application programming language
+Kotlin| Native Android integration
+Provider| State management
+"flutter_map"| Interactive maps
+OpenStreetMap| Map tiles and geographic data
+Overpass API| Nearby-place discovery
+"permission_handler"| Runtime permission management
+"sensors_plus"| Shake detection
+"flutter_local_notifications"| Local notifications
+"flutter_secure_storage"| Platform-backed secure storage
+"share_plus"| Sharing functionality
+"url_launcher"| Phone, map, and external link actions
+"http"| HTTP requests to external services and optional backend
+
+Native Android Capabilities
+
+Custom Kotlin method-channel integration supports:
+
+- Direct SMS sending and send-status callbacks.
+- System contact picker.
+- Phone calls.
+- Flashlight control.
+- Siren playback.
+- Ringtone and vibration.
+- Battery-level information.
+- Location and background tracking integration.
+
+Availability depends on Android permissions, API level, device behavior, and implementation.
+
+Optional Tracking Server
+
+Technology| Purpose
+Node.js 20+| Server runtime
+Express 4| HTTP API
+Helmet| HTTP security headers
+express-rate-limit| Request rate limiting
+MongoDB| Optional persistent tracking storage
+In-memory storage| Lightweight, non-persistent alternative
+Leaflet| Live-map web viewer
+Docker Compose| Local multi-service setup
+
+---
+
+📂 Project Structure
+
+Guardian/
+│
+├── guardian_ai_mobile/
+│   ├── android/
+│   ├── ios/
+│   ├── lib/
+│   ├── test/
+│   ├── pubspec.yaml
+│   └── README.md
+│
+├── tracking-server/
+│   ├── src/
+│   ├── package.json
+│   └── README.md
+│
+├── docs/
+│   ├── screenshots/
+│   │   ├── home.png
+│   │   ├── sos.png
+│   │   ├── live-location.png
+│   │   ├── journey.png
+│   │   ├── emergency-map.png
+│   │   └── settings.png
+│   │
+│   └── deployment/
+│       ├── app-running.jpg
+│       ├── sos-demonstration.jpg
+│       ├── location-map.jpg
+│       ├── journey-checkin.jpg
+│       ├── server-deployment.jpg
+│       └── team-presentation.jpg
+│
+├── docker-compose.yml
+└── README.md
+
+The directory and filenames above are the recommended documentation layout. Adjust them to match your actual repository.
+
+---
+
+🚀 Getting Started
+
+Prerequisites
+
+Install the following tools before building the application:
+
+- Flutter SDK 3.44 or a compatible version.
+- Dart SDK compatible with the Flutter installation.
+- Android Studio or another Android development environment.
+- Android SDK and platform tools.
+- A physical Android device for testing SMS, calls, GPS, flashlight, and background services.
+- Git.
+
+The optional tracking server additionally requires Node.js 20+ and Docker with Docker Compose if you intend to use the supplied container setup.
+
+1. Clone the Repository
+
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd <YOUR_REPOSITORY_DIRECTORY>
+
+Replace the placeholders with your actual repository URL and directory name.
+
+2. Open the Mobile Application
+
 cd guardian_ai_mobile
+
+3. Install Dependencies
+
 flutter pub get
-flutter run            # on a connected Android phone or emulator
-```
 
-**Testing SMS on an emulator:** add a contact with the emulator's own number,
-`+15555215554`. The app really sends the SMS; it appears as a sent message in
-the emulator's Messages app. Set a fake GPS position with
-`adb emu geo fix <longitude> <latitude>`.
+4. Check the Development Environment
 
-## Install the app on a phone
+flutter doctor
 
-There are two editions of the same app. Both are signed with the same key, so
-you can switch between them later without losing data.
+Resolve any missing Android SDK, device, or Flutter configuration requirements reported by the command.
 
-| | **Full** (`app-full-release.apk`) | **Lite** (`app-lite-release.apk`) |
-|---|---|---|
-| SOS alert | SMS sent automatically in the background | SMS app opens pre-filled; you press **Send** |
-| Location-update SMS during SOS | Automatic, every few minutes | Tap **Send alert again** (or use a live-map link) |
-| Missed journey check-in | Contacts alerted automatically | You get a notification and the SMS app opens |
-| Everything else | ✓ | ✓ |
-| How to install | **USB only** (see below) | Any way: WhatsApp, Drive, browser, file manager |
+5. Connect an Android Device
 
-**Why two editions?** In India, Google Play Protect's *enhanced fraud
-protection* automatically blocks installing apps with SMS permissions from
-WhatsApp, browsers or file managers ("App blocked to protect your device").
-There's no "Install anyway" for this. Installs over USB aren't affected, so
-the full edition goes on over USB, and the Lite edition, which has no SMS or
-call permissions, installs normally from anywhere.
+Enable developer options and USB debugging on a compatible Android device, then connect it to your computer.
 
-### Build
+Verify that Flutter detects the device:
 
-```bash
-cd guardian_ai_mobile
-flutter build apk --release --flavor full
-flutter build apk --release --flavor lite
-```
+flutter devices
 
-The APKs are written to `guardian_ai_mobile/build/app/outputs/flutter-apk/` and
-work on any Android 7.0+ phone. If a rebuilt APK seems to contain old code, run
-`flutter clean` first.
+6. Run the Application
 
-### Full edition, over USB (recommended for your own phone)
+flutter run
 
-1. On the phone: *Settings → About phone* → tap **Build number** 7 times, then
-   *Settings → System → Developer options* → turn on **USB debugging**.
-2. Connect the phone to the PC with a USB cable and tap **Allow** on the phone.
-3. Install:
-   ```bash
-   adb install -r guardian_ai_mobile/build/app/outputs/flutter-apk/app-full-release.apk
-   ```
-   (or `flutter install --flavor full` from `guardian_ai_mobile`). `adb` lives in
-   `%LOCALAPPDATA%\Android\Sdk\platform-tools`.
-4. Open Guardian, add contacts, allow Location, SMS, Phone and Notifications,
-   then press **Send test SMS** on a contact. This needs a SIM with SMS
-   balance, but no mobile data.
+Grant the permissions requested by the application when testing the corresponding features.
 
-### Full edition installed from a file? Unblock SMS once
+7. Build an Android APK
 
-On Android 15 and newer, an app installed from a file (WhatsApp, Drive, a
-browser, a file manager) can't get the SMS permission straight away. Tapping
-Allow shows **"App was denied access to SMS"**, and Guardian shows
-**Automatic SMS is off** with a **How to allow** button. To fix it:
+flutter build apk --release
 
-1. In Guardian, tap **How to allow**, close Android's message, then tap **Open app settings**.
-2. Tap **⋮** (top right) → **Allow restricted settings**, and confirm with your PIN or fingerprint.
-3. Open **Permissions → SMS → Allow**, then go back to Guardian. It shows *SMS allowed*.
+The generated APK is normally located at:
 
-The ⋮ option only appears after Android has shown its "denied" message once,
-which step 1 makes sure of. Installing over USB (above) avoids this entirely.
-Until SMS is allowed, SOS still works: your SMS app opens with the alert ready
-and you press Send.
+build/app/outputs/flutter-apk/app-release.apk
 
-### Lite edition, without a cable (e.g. for family members)
+The precise output location can vary if the project uses a customized Android build configuration.
 
-Send `app-lite-release.apk` by WhatsApp, Google Drive or email. Open it on the
-phone, allow *Install unknown apps* for that app, and install. If Play Protect
-warns that the app is unrecognised, choose **More details → Install anyway**.
+Testing recommendation: Test on a physical device before distributing a build. SMS, location, shake detection, calls, and background behavior cannot be validated fully through a typical desktop-only workflow.
 
-### Signing key
+---
 
-Release builds are signed with `android/guardian-release.jks`, and its
-passwords are in `android/key.properties`. Both files are git-ignored. **Back
-them up somewhere safe:** updates to an installed app must be signed with the
-same key, or users have to uninstall first, which deletes their data. A fresh
-clone without these files falls back to the debug key.
+🌐 Do I Need the Tracking Server?
 
-## Run the tracking server (optional, for live-map links)
+No. The mobile application is designed to operate without the optional tracking server.
 
-Your phone and your contacts' phones must be able to reach the server, and a
-release build of the app only talks to it over **HTTPS**. So for real use,
-deploy the server; a server on your PC is only for testing.
-
-**Deploy for free on Render** (gives you an HTTPS address):
-1. Push this project to a GitHub repository.
-2. On [render.com](https://render.com), choose **New → Blueprint** and select the repository. It uses [`render.yaml`](render.yaml).
-3. When it's live, copy the address (e.g. `https://guardian-tracking.onrender.com`).
-4. In the app, open **Settings → Live-map server**, paste the address, and tap **Test**. It should say *Connected*. Then tap **Save**.
-
-The free plan sleeps after 15 minutes without traffic, and waking takes about
-a minute. If the server is asleep when you press SOS, the alert SMS still goes
-out immediately with a Google Maps link; only the live-map link is left out.
-Tap **Test** in settings before a trip to wake it. Any Node 20+ host with HTTPS
-works too (Railway, Fly.io, a VPS). Set `NODE_ENV=production` and
-`TRUST_PROXY_HOPS` as described in `tracking-server/.env.example`.
-
-**Run locally for testing:**
-
-```bash
-cd tracking-server
-npm install
-npm start              # http://localhost:4000, in-memory store
-```
-
-Or, with MongoDB: `docker compose up --build` from the repository root.
-Addresses to enter in the app:
-- Android emulator: `http://10.0.2.2:4000`
-- Real phone over USB: first run `adb reverse tcp:4000 tcp:4000`, then use `http://localhost:4000`
-- A phone on the same Wi-Fi using `http://192.168.x.x:4000`: this only works with a debug build (`flutter run`), because release builds block plain HTTP to other addresses.
-
-Contacts open links like `https://your-server/t/<token>`: a mobile web page with
-a live map, an accuracy circle, the route travelled, battery level, and
-"Directions" / "Call 112" buttons. Links are unguessable, expire with the share,
-and are deleted about 1 h after it ends.
-
-## Tests
-
-```bash
-cd guardian_ai_mobile && flutter analyze && flutter test
-cd tracking-server && npm test
-# MongoDB store integration test:
-MONGO_TEST_URI=mongodb://localhost:27017/guardian_tracking_test npm test
-```
-
-## Platform notes and limits
-
-- **Android** has every feature. Background SMS needs the SEND_SMS permission and a SIM with SMS service. Google Play restricts SEND_SMS to certain app categories, so for a Play Store release, declare the app as a safety/emergency app or fall back to the SMS composer.
-- **iOS** doesn't allow apps to send SMS silently, so Guardian opens the Messages app pre-filled and you tap *Send*. Calls go through the dialer. Siren, strobe and the contact picker are Android-only.
-- Shake-to-SOS works while the app is open. SOS, journey and live-share tracking keep running in the background, but if you force-close the app from the recents screen, Android stops them. A journey whose deadline passes while the app is closed is escalated as soon as the app opens again.
-- Emergency numbers (112 etc.) always open the dialer: Android doesn't let apps auto-dial them.
-- Nearby-place data comes from OpenStreetMap volunteers and can be incomplete. In an emergency, call 112.
+Capability| Server Required?
+SOS SMS alerts| No
+Location information in SMS| No
+Periodic SMS location updates| No
+Jou
