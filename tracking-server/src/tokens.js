@@ -1,3 +1,4 @@
+
 const crypto = require('crypto');
 
 const randomToken = (bytes) => crypto.randomBytes(bytes).toString('base64url');
