@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 
 function loadConfig(env = process.env) {
